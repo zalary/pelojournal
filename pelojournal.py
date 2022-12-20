@@ -32,7 +32,7 @@ else:
 print(start)
 start_zulu = start.isoformat() + 'T06:00:00.000Z'
 print(start_zulu)
-end = date.today() + datetime.timedelta(days = 1)
+end = start + datetime.timedelta(days = 1)
 end_zulu = end.isoformat() + 'T06:00:00.000Z'
 # print(start_zulu)
 # print(end_zulu)
