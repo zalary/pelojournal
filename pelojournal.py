@@ -46,13 +46,14 @@ workout_list = s.get(today_workouts)
 workout_json = json.loads(workout_list.text)
 print(json.dumps(workout_json, indent=2))
 
+workouts_array = []
 for i in workout_json['data']:
     instructor_lookup = "https://api.onepeloton.com/api/instructor/{}".format(i['ride']['instructor_id'])
     instructor = s.get(instructor_lookup)
     instructor_json = json.loads(instructor.text)
     #print(json.dumps(instructor_json, indent=2))
 
-    workout_name = (i['name'])
+    workout_name = (i['ride']['title'])
     instructor_name = instructor_json['name']
     workout_start = datetime.datetime.fromtimestamp( i['created_at'] )
     workout_length = str(datetime.timedelta(seconds=i['ride']['duration']))
