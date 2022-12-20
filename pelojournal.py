@@ -57,21 +57,25 @@ for i in workout_json['data']:
     instructor_name = instructor_json['name']
     workout_start = datetime.datetime.fromtimestamp( i['created_at'] )
     workout_length = str(datetime.timedelta(seconds=i['ride']['duration']))
-    print (workout_name)
-    print(instructor_name)
-    print (workout_length)
-    print(workout_start)
+    workouts_array.append([workout_name, instructor_name, workout_length, workout_start])
+
+for w in workouts_array:
+    print(workouts_array)
+    workout_name = (w[0])
+    instructor_name = (w[1])
+    workout_length = (w[2])
+    workout_start = (w[3])
     text = '''
     {0}
     {1}
     {2}
     '''.format(workout_name,instructor_name,workout_length)
 
-    # s = 'dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text)
-    # os.system(s)
-
-    # Using system() method to
-    # execute shell commands
-    subprocess.Popen('dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text), shell=True)
+    # This throws an error on each post, but is successful
+    s = 'dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text)
+    os.system(s)
 
 
+    # Using system() method to execute shell commands
+    # This works but the shell has to be force closed
+    # subprocess.Popen('dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text), shell=True)
