@@ -56,26 +56,33 @@ for i in workout_json['data']:
     workout_name = (i['ride']['title'])
     instructor_name = instructor_json['name']
     workout_start = datetime.datetime.fromtimestamp( i['created_at'] )
+    device = (i['device_type'])
     workout_length = str(datetime.timedelta(seconds=i['ride']['duration']))
-    workouts_array.append([workout_name, instructor_name, workout_length, workout_start])
-
-for w in workouts_array:
+    workouts_array.append([workout_name, instructor_name, workout_length, workout_start, device])
     print(workouts_array)
-    workout_name = (w[0])
-    instructor_name = (w[1])
-    workout_length = (w[2])
-    workout_start = (w[3])
-    text = '''
-    {0}
-    {1}
-    {2}
-    '''.format(workout_name,instructor_name,workout_length)
 
-    # This throws an error on each post, but is successful
-    s = 'dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text)
-    os.system(s)
+workout_list = ["Peloton Workouts"]
+for w in workouts_array:
+    if (w[4]) == "iPhone" or (w[4]) == "iPad":
+        # print(workouts_array)
+        workout_name = (w[0])
+        instructor_name = (w[1])
+        workout_length = (w[2])
+        workout_start = (w[3])
+        text = '''
+
+{0} - {1}'''.format(workout_name,instructor_name)
+        # figure out how to prepend
+        # https://linuxhint.com/python-prepend-list/
+        workout_list.append(text)
+
+        workout_text = "\n".join(workout_list)
+        print(workout_text)
+# This throws an error on each post, but is successful
+s = 'dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, workout_text)
+os.system(s)
 
 
-    # Using system() method to execute shell commands
-    # This works but the shell has to be force closed
-    # subprocess.Popen('dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text), shell=True)
+#     # Using system() method to execute shell commands
+#     # This works but the shell has to be force closed
+#     # subprocess.Popen('dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text), shell=True)
