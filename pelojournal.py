@@ -1,3 +1,4 @@
+import argparse
 import requests
 import json
 import time, datetime
@@ -21,20 +22,29 @@ user_id = user_json['id']
 
 # the zulu time here is almost certainly based on your own timezone.
 # use dev tools in the browser to confirm your date format
-user_date = input("Which date do you wish to import (MM/DD/YY): ")
-if user_date:
+
+parser = argparse.ArgumentParser(
+    prog="pelojournal",
+    description="Post your Peloton workouts to your DayOne journal",
+    epilog="Thanks for using %(prog)s! :)",
+)
+
+parser.add_argument('-d', '--date', help='optional: the date of workouts you want to import, in MM/DD/YY format (defaults to today)')
+args = vars(parser.parse_args())
+
+if args['date']: 
+    # print(args['date'])
+    user_date = args['date']
     start = datetime.datetime.strptime(user_date, '%m/%d/%y').date()
 else:
     start =  date.today() 
-# print ("date_today: ", date.today())
-# print("user_date:", user_date)
+print ("date_today: ", date.today())
 
-print(start)
+# print("start: ", start)
 start_zulu = start.isoformat() + 'T06:00:00.000Z'
-print(start_zulu)
+# print("start_zulu: ", start_zulu)
 end = start + datetime.timedelta(days = 1)
 end_zulu = end.isoformat() + 'T06:00:00.000Z'
-# print(start_zulu)
 # print(end_zulu)
 
 # get only today's workouts
@@ -58,7 +68,7 @@ for i in workout_json['data']:
     workout_start = datetime.datetime.fromtimestamp( i['created_at'] )
     device = (i['device_type'])
     workout_length = str(datetime.timedelta(seconds=i['ride']['duration']))
-    workouts_array.append([workout_name, instructor_name, workout_length, workout_start, device])
+    workouts_array.insert(0, [workout_name, instructor_name, workout_length, workout_start, device])
     print(workouts_array)
 
 workout_list = ["Peloton Workouts"]
@@ -81,8 +91,3 @@ for w in workouts_array:
 # This throws an error on each post, but is successful
 s = 'dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, workout_text)
 os.system(s)
-
-
-#     # Using system() method to execute shell commands
-#     # This works but the shell has to be force closed
-#     # subprocess.Popen('dayone2 -j Fitness --d="{}" new "{}" -t peloton'.format(workout_start, text), shell=True)
